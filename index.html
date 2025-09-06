@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon Special Offers</title>
+    <style>
+        :root {
+            --primary: #232f3e;
+            --secondary: #ff9900;
+            --light: #f2f2f2;
+            --dark: #131a22;
+            --text-light: #ffffff;
+            --text-dark: #333333;
+            --bg-light: #ffffff;
+            --bg-dark: #131a22;
+            --card-bg-light: #ffffff;
+            --card-bg-dark: #232f3e;
+            --border-light: #ddd;
+            --border-dark: #444;
+            --playlist-bg: #37475a;
+        }
+
+        .light-mode {
+            --bg-color: var(--bg-light);
+            --text-color: var(--text-dark);
+            --card-bg: var(--card-bg-light);
+            --border-color: var(--border-light);
+        }
+
+        .dark-mode {
+            --bg-color: var(--bg-dark);
+            --text-color: var(--text-light);
+            --card-bg: var(--card-bg-dark);
+            --border-color: var(--border-dark);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo span {
+            color: var(--secondary);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Playlist Section */
+        .playlist-section {
+            margin: 1.5rem 0;
+        }
+
+        .playlist-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .playlist-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 1rem;
+            padding: 0.5rem 0;
+            scrollbar-width: thin;
+        }
+
+        .playlist-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .playlist-container::-webkit-scrollbar-thumb {
+            background: var(--secondary);
+            border-radius: 4px;
+        }
+
+        .playlist-item {
+            flex: 0 0 auto;
+            width: 200px;
+            background-color: var(--playlist-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .playlist-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .playlist-image {
+            width: 100%;
+            height: 120px;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .playlist-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+
+        .playlist-info {
+            padding: 1rem;
+            color: white;
+        }
+
+        .playlist-name {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .playlist-count {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        /* Slider Styles */
+        .slider-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            margin: 1rem 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .slider {
+            display: flex;
+            width: 400%;
+            height: 100%;
+            animation: slide 20s infinite;
+        }
+
+        .slide {
+            width: 25%;
+            height: 100%;
+        }
+
+        .slide a {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background-color: var(--card-bg);
+        }
+
+        @keyframes slide {
+            0% { transform: translateX(0); }
+            20% { transform: translateX(0); }
+            25% { transform: translateX(-25%); }
+            45% { transform: translateX(-25%); }
+            50% { transform: translateX(-50%); }
+            70% { transform: translateX(-50%); }
+            75% { transform: translateX(-75%); }
+            95% { transform: translateX(-75%); }
+            100% { transform: translateX(0); }
+        }
+
+        /* Products Grid */
+        .products-section {
+            padding: 2rem 0;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--text-color);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .products-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .product-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            border: 1px solid var(--border-color);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            padding: 1rem;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .product-info {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .product-name {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            flex-grow: 1;
+        }
+
+        .product-button {
+            display: block;
+            background-color: var(--secondary);
+            color: white;
+            text-align: center;
+            padding: 0.75rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .product-button:hover {
+            background-color: #e88a00;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+
+        /* Playlist Content View */
+        .playlist-content-view {
+            display: none;
+            padding: 2rem 0;
+        }
+
+        .back-button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .playlist-content-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-color);
+        }
+
+        /* Ad Container */
+        .ad-container {
+            background: var(--card-bg);
+            border: 1px dashed var(--border-color);
+            padding: 1rem;
+            text-align: center;
+            margin: 2rem 0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 120px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        .copyright {
+            margin-top: 1rem;
+            text-align: center;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <a href="#" class="logo">Amazon <span>Special Offers</span></a>
+            <button id="themeToggle" class="theme-toggle">🌙</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Playlist Section -->
+        <section class="playlist-section">
+            <h2 class="playlist-title">Featured Playlists</h2>
+            <div class="playlist-container" id="playlistContainer">
+                <!-- Playlist items will be populated by JavaScript -->
+                <div class="playlist-item" data-playlist-id="default">
+                    <div class="playlist-image">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEyMCIgZmlsbD0iIzIzMmYzZSIvPjx0ZXh0IHg9IjEwMCIgeT0iNjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaX6ZT0iMTYiIGZpbGw9IiNmZjkwMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlBsYXlsaXN0IENvdmVyPC90ZXh0Pjwvc3ZnPg==" alt="Playlist Cover">
+                    </div>
+                    <div class="playlist-info">
+                        <h3 class="playlist-name">Mobile Laptops</h3>
+                        <p class="playlist-count">5 products</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slider Section -->
+        <div class="slider-container">
+            <div class="slider" id="slider">
+                <!-- Slider items will be populated by JavaScript -->
+                <div class="slide">
+                    <a href="#" target="_blank">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iIzIzMmYzZSIvPjx0ZXh0IHg9IjQwMCIgeT0iMjAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiNmZjkwMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkFtYXpvbiBTcGVjaWFsIE9mZmVyczwvdGV4dD48L3N2Zz4=" alt="Slider Placeholder">
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ad Container -->
+        <div class="ad-container">
+            <p>Ad Space (Google AdSense)</p>
+            <!-- Google AdSense Code would go here -->
+            <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=YOUR_ADSENSE_ID" crossorigin="anonymous"></script> -->
+        </div>
+
+        <!-- Products Section -->
+        <section class="products-section">
+            <h2 class="section-title">Featured Products</h2>
+            <div class="products-grid" id="productsGrid">
+                <!-- Products will be populated by JavaScript -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2YyZjJmMiIvPjx0ZXh0IHg9IjE1MCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlByb2R1Y3QgSW1hZ2U8L3RleHQ+PC9zdmc+" alt="Product Placeholder">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">Sample Product</h3>
+                        <a href="#" class="product-button">Buy Now</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Playlist Content View -->
+        <section class="playlist-content-view" id="playlistContentView">
+            <button class="back-button" id="backButton">← Back to All Products</button>
+            <h2 class="playlist-content-title" id="playlistContentTitle">Playlist Name</h2>
+            <div class="products-grid" id="playlistProductsGrid">
+                <!-- Playlist products will be populated here -->
+            </div>
+        </section>
+
+        <!-- Ad Container -->
+        <div class="ad-container">
+            <p>Ad Space (Google AdSense)</p>
+            <!-- Google AdSense Code would go here -->
+            <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=YOUR_ADSENSE_ID" crossorigin="anonymous"></script> -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-links">
+                <a href="#">About Us</a>
+                <a href="#">Contact</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+            <p class="copyright">© 2023 Amazon Special Offers. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    
+    <script>
+        // Firebase configuration - replace with your actual config
+        const firebaseConfig = {
+  apiKey: "AIzaSyC1z1pidO4mCtW3Xwg6_Wyf5khXr0wScQs",
+  authDomain: "fir-68580.firebaseapp.com",
+  databaseURL: "https://fir-68580-default-rtdb.firebaseio.com",
+  projectId: "fir-68580",
+  storageBucket: "fir-68580.firebasestorage.app",
+  messagingSenderId: "237900873505",
+  appId: "1:237900873505:web:e6ac92b88c139a99198860"
+};
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        
+        // Get reference to Firebase database
+        const database = firebase.database();
+        
+        // DOM elements
+        const themeToggle = document.getElementById('themeToggle');
+        const slider = document.getElementById('slider');
+        const productsGrid = document.getElementById('productsGrid');
+        const playlistContainer = document.getElementById('playlistContainer');
+        const playlistContentView = document.getElementById('playlistContentView');
+        const backButton = document.getElementById('backButton');
+        const playlistContentTitle = document.getElementById('playlistContentTitle');
+        const playlistProductsGrid = document.getElementById('playlistProductsGrid');
+        
+        // Theme toggle functionality
+        themeToggle.addEventListener('click', () => {
+            if (document.body.classList.contains('light-mode')) {
+                document.body.classList.remove('light-mode');
+                document.body.classList.add('dark-mode');
+                themeToggle.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark-mode');
+                document.body.classList.add('light-mode');
+                themeToggle.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            }
+        });
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.remove('light-mode');
+            document.body.classList.add('dark-mode');
+            themeToggle.textContent = '☀️';
+        } else {
+            document.body.classList.remove('dark-mode');
+            document.body.classList.add('light-mode');
+            themeToggle.textContent = '🌙';
+        }
+        
+        // Back button functionality
+        backButton.addEventListener('click', () => {
+            playlistContentView.style.display = 'none';
+            document.querySelector('.playlist-section').style.display = 'block';
+            document.querySelector('.slider-container').style.display = 'block';
+            document.querySelector('.products-section').style.display = 'block';
+            document.querySelectorAll('.ad-container').forEach(ad => {
+                ad.style.display = 'flex';
+            });
+        });
+        
+        // Load playlists from Firebase
+        database.ref('playlists').on('value', (snapshot) => {
+            if (!snapshot.exists()) {
+                // Create a default playlist if none exist
+                const defaultPlaylist = {
+                    name: "Mobile Laptops",
+                    image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEyMCIgZmlsbD0iIzIzMmYzZSIvPjx0ZXh0IHg9IjEwMCIgeT0iNjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNiIgZmlsbD0iI2ZmOTAwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TW9iaWxlIExhcHRvcHM8L3RleHQ+PC9zdmc+",
+                    products: ["product1", "product2", "product3"]
+                };
+                
+                database.ref('playlists/default').set(defaultPlaylist);
+                return;
+            }
+            
+            playlistContainer.innerHTML = '';
+            snapshot.forEach((childSnapshot) => {
+                const playlistId = childSnapshot.key;
+                const playlist = childSnapshot.val();
+                
+                const playlistItem = document.createElement('div');
+                playlistItem.className = 'playlist-item';
+                playlistItem.dataset.playlistId = playlistId;
+                
+                const playlistImage = document.createElement('div');
+                playlistImage.className = 'playlist-image';
+                
+                const img = document.createElement('img');
+                img.src = playlist.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEyMCIgZmlsbD0iIzIzMmYzZSIvPjx0ZXh0IHg9IjEwMCIgeT0iNjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNiIgZmlsbD0iI2ZmOTAwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+UGxheWxpc3QgQ292ZXI8L3RleHQ+PC9zdmc+';
+                img.alt = playlist.name || 'Playlist';
+                
+                playlistImage.appendChild(img);
+                
+                const playlistInfo = document.createElement('div');
+                playlistInfo.className = 'playlist-info';
+                
+                const playlistName = document.createElement('h3');
+                playlistName.className = 'playlist-name';
+                playlistName.textContent = playlist.name || 'Playlist Name';
+                
+                const playlistCount = document.createElement('p');
+                playlistCount.className = 'playlist-count';
+                const productCount = Array.isArray(playlist.products) ? playlist.products.length : 0;
+                playlistCount.textContent = `${productCount} product${productCount !== 1 ? 's' : ''}`;
+                
+                playlistInfo.appendChild(playlistName);
+                playlistInfo.appendChild(playlistCount);
+                
+                playlistItem.appendChild(playlistImage);
+                playlistItem.appendChild(playlistInfo);
+                
+                // Add click event to show playlist content
+                playlistItem.addEventListener('click', () => {
+                    showPlaylistContent(playlistId, playlist);
+                });
+                
+                playlistContainer.appendChild(playlistItem);
+            });
+        });
+        
+        // Load slider images from Firebase
+        database.ref('slider').on('value', (snapshot) => {
+            if (!snapshot.exists()) {
+                // Use default placeholder if no slider data exists
+                return;
+            }
+            
+            slider.innerHTML = '';
+            snapshot.forEach((childSnapshot) => {
+                const slide = childSnapshot.val();
+                const slideElement = document.createElement('div');
+                slideElement.className = 'slide';
+                
+                const link = document.createElement('a');
+                link.href = slide.url || '#';
+                link.target = '_blank';
+                
+                const img = document.createElement('img');
+                img.src = slide.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iIzIzMmYzZSIvPjx0ZXh0IHg9IjQwMCIgeT0iMjAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiNmZjkwMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlNsaWRlciBJbWFnZTwvdGV4dD48L3N2Zz4=';
+                img.alt = 'Special Offer';
+                
+                link.appendChild(img);
+                slideElement.appendChild(link);
+                slider.appendChild(slideElement);
+            });
+        });
+        
+        // Load products from Firebase
+        database.ref('products').on('value', (snapshot) => {
+            if (!snapshot.exists()) {
+                // Use default placeholder if no product data exists
+                return;
+            }
+            
+            productsGrid.innerHTML = '';
+            snapshot.forEach((childSnapshot) => {
+                const productId = childSnapshot.key;
+                const product = childSnapshot.val();
+                
+                const productCard = createProductCard(productId, product);
+                productsGrid.appendChild(productCard);
+            });
+        });
+        
+        // Function to show playlist content
+        function showPlaylistContent(playlistId, playlist) {
+            // Hide other sections
+            document.querySelector('.playlist-section').style.display = 'none';
+            document.querySelector('.slider-container').style.display = 'none';
+            document.querySelector('.products-section').style.display = 'none';
+            document.querySelectorAll('.ad-container').forEach(ad => {
+                ad.style.display = 'none';
+            });
+            
+            // Show playlist content view
+            playlistContentView.style.display = 'block';
+            playlistContentTitle.textContent = playlist.name || 'Playlist';
+            
+            // Clear previous products
+            playlistProductsGrid.innerHTML = '';
+            
+            // Add products from playlist
+            if (playlist.products && Array.isArray(playlist.products)) {
+                playlist.products.forEach(productId => {
+                    database.ref('products/' + productId).once('value', (productSnapshot) => {
+                        if (productSnapshot.exists()) {
+                            const product = productSnapshot.val();
+                            const productCard = createProductCard(productId, product);
+                            playlistProductsGrid.appendChild(productCard);
+                        }
+                    });
+                });
+            } else {
+                playlistProductsGrid.innerHTML = '<p>No products in this playlist</p>';
+            }
+        }
+        
+        // Function to create product card
+        function createProductCard(productId, product) {
+            const productCard = document.createElement('div');
+            productCard.className = 'product-card';
+            
+            const productImage = document.createElement('div');
+            productImage.className = 'product-image';
+            
+            const img = document.createElement('img');
+            img.src = product.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2YyZjJmMiIvPjx0ZXh0IHg9IjE1MCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlByb2R1Y3QgSW1hZ2U8L3RleHQ+PC9zdmc+';
+            img.alt = product.name || 'Product';
+            
+            productImage.appendChild(img);
+            
+            const productInfo = document.createElement('div');
+            productInfo.className = 'product-info';
+            
+            const productName = document.createElement('h3');
+            productName.className = 'product-name';
+            productName.textContent = product.name || 'Product Name';
+            
+            const productButton = document.createElement('a');
+            productButton.className = 'product-button';
+            productButton.href = product.buttonUrl || '#';
+            productButton.target = '_blank';
+            productButton.textContent = product.buttonText || 'Buy Now';
+            
+            productInfo.appendChild(productName);
+            productInfo.appendChild(productButton);
+            
+            productCard.appendChild(productImage);
+            productCard.appendChild(productInfo);
+            
+            return productCard;
+        }
+    </script>
+</body>
+</html>
